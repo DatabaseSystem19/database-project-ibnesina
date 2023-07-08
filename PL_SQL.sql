@@ -176,3 +176,27 @@ begin
   dbms_output.put_line(user_name);
 end;
 /
+
+-- Trigger
+alter table users add user_type varchar(10);
+
+-- Insert value in user if the age is greater then 17 then an user can called mature otherwise child
+create or replace TRIGGER trig before INSERT or UPDATE
+on Users
+FOR EACH ROW
+DECLARE
+C DATE;
+BEGIN
+SELECT sysdate into c from dual;
+if(c-:new.user_birthday)>17 THEN
+    :new.user_type:='Mature';
+ELSE
+    :new.user_type:='Child';
+end if;
+END;
+/
+
+select * from users;
+UPDATE users set user_name = 'Md. Hasibul Islam' where user_id = 5; 
+INSERT INTO users VALUES(6, 'Sina', 'sina@outlook.com', 'Male', DATE'1999-10-10', 'Bangladesh', 'Islam', '');
+select * from users;
